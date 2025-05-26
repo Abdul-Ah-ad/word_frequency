@@ -1,4 +1,6 @@
 import sys
+from collections import Counter
+
 
 def read_path_with_validation(input_path):
     """Read the file and return if the file path is correct.
@@ -20,76 +22,49 @@ def main(input_path):
         text (file_path).
     """
     text = read_path_with_validation(input_path)
-    word_frequency_counter(text)
+    count_word_frequency(text)
 
 
-def display(word_frequency_counts):
+def display(word_frequency):
     """Display word frequencies in a formatted table.
-
+    
     Args:
         word_frequency_counts (list): List of tuples containing (word, frequency).
     """
     print('Word                 Frequency')
     print('-------------------------------')
-    for word, frequency in word_frequency_counts:
+    for word, frequency in word_frequency:
         print(f'{word:<25} {frequency}')
     print('-------------------------------')
         
-def descending_order(word_frequency_counts):
+def descending_order(word_frequency):
     """Changing the orignal order into Descending order.
 
     Args:
         word_frequency_counts (list): List of tuples containing (word, frequency).
     """
-    for current in range (len(word_frequency_counts)):
-        for next in range(current,len(word_frequency_counts) - 1):
-            if word_frequency_counts[current][1] < word_frequency_counts[next][1]:
-                word_frequency_counts[current], word_frequency_counts[next] = word_frequency_counts[next], word_frequency_counts[current]
+    for current in range (len(word_frequency)):
+        for next in range(current,len(word_frequency) - 1):
+            if word_frequency[current][1] < word_frequency[next][1]:
+                word_frequency[current], word_frequency[next] = word_frequency[next], word_frequency[current]
 
-    display(word_frequency_counts)
+    display(word_frequency)
         
         
-def word_frequency_counter(text):
-    """Creating unique word list and word_frequency_count.
+def count_word_frequency(text):
+    """It computes the unique word frequency.
 
     Args:
         Text (list): List of input text.
     """
-    words_list = text.split()
-    word_frequency_counts = []
-    unique_word = []
-    for match in words_list:
-        if match not in unique_word:
-            counter = 0
-            unique_word.append(match)
-            for other in words_list:
-                if match == other :
-                    counter += 1
-            word_frequency_counts.append((match,counter))
-    
-    descending_order(word_frequency_counts)
+    words = text.split()
+    word_frequency= list(Counter(words).items())
+    descending_order(word_frequency)
         
-        
-
-
-
-if __name__ == "__main__":
-    
-    
+if __name__ == "__main__":    
     if len(sys.argv) != 2:
         print('Invalid Arguments!!!')
         sys.exit(1)
 
     main(sys.argv[1])
-
-
     
-
-              
-    
-    
-
-
-
-
-
