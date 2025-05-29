@@ -1,4 +1,5 @@
 import sys
+import re
 from collections import Counter
 
 
@@ -16,13 +17,13 @@ def read_path_with_validation(input_path):
         sys.exit(1)
 
 def main(input_path):
-    """Recieves text to check validation path and to call word frequency function.
+    """Recieves input_file_path to check validation path and to call word frequency function.
 
     Args:
         text (file_path).
     """
-    text = read_path_with_validation(input_path)
-    count_word_frequency(text)
+    content = read_path_with_validation(input_path)
+    count_word_frequency(content)
 
 
 def display(word_frequency):
@@ -37,29 +38,26 @@ def display(word_frequency):
         print(f'{word:<25} {frequency}')
     print('-------------------------------')
         
-def descending_order(word_frequency):
+def ort_by_frequency_desc(word_frequency):
     """Changing the orignal order into Descending order.
 
     Args:
         word_frequency_counts (list): List of tuples containing (word, frequency).
     """
-    for current in range (len(word_frequency)):
-        for next in range(current,len(word_frequency) - 1):
-            if word_frequency[current][1] < word_frequency[next][1]:
-                word_frequency[current], word_frequency[next] = word_frequency[next], word_frequency[current]
+    word_frequency.sort(key=lambda x: x[1], reverse=True)
 
     display(word_frequency)
         
         
-def count_word_frequency(text):
+def count_word_frequency(content):
     """It computes the unique word frequency.
 
     Args:
-        Text (list): List of input text.
+        Text (string): string of input text.
     """
-    words = text.split()
+    words = re.findall(r'\b\w+\b',content)
     word_frequency= list(Counter(words).items())
-    descending_order(word_frequency)
+    ort_by_frequency_desc(word_frequency)
         
 if __name__ == "__main__":    
     if len(sys.argv) != 2:
