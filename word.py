@@ -10,13 +10,16 @@ WordFrequency = namedtuple('WordFrequency', ['word', 'frequency'])
 
 def get_file_content_safe(input_path: str) -> str:
     """
-    Safely read the content of a file.
+    Safely reads and returns the content of a file as a string.
 
     Args:
-        input_path (str): Path to the input file.
+        file_path (str): The path to the file to be read.
 
     Returns:
-        str: Content of the file as a string.
+        str: Contents of the file if it exists.
+
+    Exits:
+        Exits the program if the file is not found.
     """
     try:
         with open(input_path, 'r') as fin:
