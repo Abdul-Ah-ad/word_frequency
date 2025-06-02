@@ -1,11 +1,12 @@
-import sys
-import re
-from collections import Counter, namedtuple
 import argparse
+import re
+import sys
+from collections import Counter, namedtuple
 from typing import List
 
-# Define a namedtuple for better readability
+
 WordFrequency = namedtuple('WordFrequency', ['word', 'frequency'])
+
 
 def get_file_content_safe(input_path: str) -> str:
     """
@@ -21,8 +22,9 @@ def get_file_content_safe(input_path: str) -> str:
         with open(input_path, 'r') as fin:
             return fin.read()
     except FileNotFoundError:
-        print(f"Error: File '{input_path}' not found.")
+        print(f'Error: File "{input_path}" not found.')
         sys.exit(1)
+
 
 def count_word_frequency(content: str) -> List[WordFrequency]:
     """
@@ -38,7 +40,10 @@ def count_word_frequency(content: str) -> List[WordFrequency]:
     word_counts = Counter(words)
     return [WordFrequency(word, freq) for word, freq in word_counts.items()]
 
-def sort_by_frequency_desc(word_frequencies: List[WordFrequency]) -> List[WordFrequency]:
+
+def sort_by_frequency_desc(
+    word_frequencies: List[WordFrequency]
+) -> List[WordFrequency]:
     """
     Sort words by frequency in descending order.
 
@@ -49,6 +54,7 @@ def sort_by_frequency_desc(word_frequencies: List[WordFrequency]) -> List[WordFr
         List[WordFrequency]: Sorted list.
     """
     return sorted(word_frequencies, key=lambda wf: wf.frequency, reverse=True)
+
 
 def display(word_frequencies: List[WordFrequency]) -> None:
     """
@@ -63,6 +69,7 @@ def display(word_frequencies: List[WordFrequency]) -> None:
         print(f'{wf.word:<25} {wf.frequency}')
     print('-------------------------------')
 
+
 def main(input_path: str) -> None:
     """
     Main function to process the file and display word frequencies.
@@ -75,7 +82,8 @@ def main(input_path: str) -> None:
     sorted_frequencies = sort_by_frequency_desc(word_frequencies)
     display(sorted_frequencies)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Word Frequency Counter')
     parser.add_argument('input_file', type=str, help='Path to input text file')
     args = parser.parse_args()
