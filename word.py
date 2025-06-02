@@ -1,14 +1,21 @@
 import sys
 import re
-from collections import Counter
-import argparse 
+from collections import Counter, namedtuple
+import argparse
+from typing import List
 
+# Define a namedtuple for better readability
+WordFrequency = namedtuple('WordFrequency', ['word', 'frequency'])
 
-def read_input_with_path_validation(input_path):
-    """Read the file and return if the file path is correct.
+def get_file_content_safe(input_path: str) -> str:
+    """
+    Safely read the content of a file.
 
     Args:
-        file_path : To check the path.
+        input_path (str): Path to the input file.
+
+    Returns:
+        str: Content of the file as a string.
     """
     try:
         with open(input_path, 'r') as fin:
@@ -17,55 +24,59 @@ def read_input_with_path_validation(input_path):
         print(f"Error: File '{input_path}' not found.")
         sys.exit(1)
 
-
-def main(input_path):
-    """Receives input_file_path to check validation path and to call word frequency function.
-
-    Args:
-        text (file_path).
+def count_word_frequency(content: str) -> List[WordFrequency]:
     """
-    content = read_input_with_path_validation(input_path)
-    count_word_frequency(content)
-
-
-def display(word_frequency):
-    """Display word frequencies in a formatted table.
+    Count the frequency of each unique word in the content.
 
     Args:
-        word_frequency_counts (list): List of tuples containing (word, frequency).
+        content (str): Input text.
+
+    Returns:
+        List[WordFrequency]: List of WordFrequency namedtuples.
+    """
+    words = re.findall(r"\b\w+(?:[-']\w+)*\b", content)
+    word_counts = Counter(words)
+    return [WordFrequency(word, freq) for word, freq in word_counts.items()]
+
+def sort_by_frequency_desc(word_frequencies: List[WordFrequency]) -> List[WordFrequency]:
+    """
+    Sort words by frequency in descending order.
+
+    Args:
+        word_frequencies (List[WordFrequency]): List of word-frequency pairs.
+
+    Returns:
+        List[WordFrequency]: Sorted list.
+    """
+    return sorted(word_frequencies, key=lambda wf: wf.frequency, reverse=True)
+
+def display(word_frequencies: List[WordFrequency]) -> None:
+    """
+    Display word frequencies in a formatted table.
+
+    Args:
+        word_frequencies (List[WordFrequency]): List of word-frequency pairs.
     """
     print('Word                 Frequency')
     print('-------------------------------')
-    for word, frequency in word_frequency:
-        print(f'{word:<25} {frequency}')
+    for wf in word_frequencies:
+        print(f'{wf.word:<25} {wf.frequency}')
     print('-------------------------------')
 
-
-def sort_by_frequency_desc(word_frequency):
-    """Changing the original order into Descending order.
+def main(input_path: str) -> None:
+    """
+    Main function to process the file and display word frequencies.
 
     Args:
-        word_frequency_counts (list): List of tuples containing (word, frequency).
+        input_path (str): Path to the input text file.
     """
-    word_frequency.sort(key=lambda x: x[1], reverse=True)
-    
-    display(word_frequency)
-
-
-def count_word_frequency(content):
-    """It computes the unique word frequency.
-
-    Args:
-        Text (string): string of input text.
-    """
-    words = re.findall(r'\b\w+\b', content)
-    word_frequency = list(Counter(words).items())
-    sort_by_frequency_desc(word_frequency)
-
+    content = get_file_content_safe(input_path)
+    word_frequencies = count_word_frequency(content)
+    sorted_frequencies = sort_by_frequency_desc(word_frequencies)
+    display(sorted_frequencies)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Word Frequency Counter')
     parser.add_argument('input_file', type=str, help='Path to input text file')
     args = parser.parse_args()
-
     main(args.input_file)
